@@ -1,35 +1,21 @@
 from setuptools import setup, find_packages
 
-setup_requires = [
-    ]
+setup(name='sortingExample',
 
+version='1.2.0.0',
 
-install_requires = [
-    'django==3.1.8'
-    ]
+description='Extension Tools for sortingExample',
 
+author='root',
 
-dependency_links = [
-    'git+https://github.com/django/django.git@stable/1.6.x#egg=Django-1.6b4',
-    ]
+author_email='lmn1654@gmail.com',
 
+license='MIT',
 
-setup(
-    name='Root App',
-    version='0.1',
-    description='Root App',
-    author='root',
-    author_email='root@root.com',
-    packages=find_packages(),
-    install_requires=install_requires,
-    setup_requires=setup_requires,
-    dependency_links=dependency_links,
-    scripts=['manage.py'],
-    entry_points={
-        'console_scripts': [
-            'publish = monaco.common.script:main',
-            'publish = monaco.crime.script:main',
-            'publish = monaco.gas_station.script:main',
-            ],
-        },
-    )
+py_modules=['calWordsFreq', 'findKeywordSentences'],
+
+python_requires='>=3',
+
+packages=['sorting']
+
+)
