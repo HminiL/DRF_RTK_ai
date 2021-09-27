@@ -4,7 +4,8 @@ import styled from 'styled-components'
 
 const Navigation = ()=>(<Nav>
 <NavList>
-<NavtItem><Link to="/counter">counter</Link></NavtItem>
+    <NavtItem><Link to="/counter">counter</Link></NavtItem>
+    <NavtItem><Link to="/todo">todo</Link></NavtItem>
     <NavtItem><Link to="/math">수학</Link></NavtItem>
     <NavtItem><Link to="/linear">선형</Link></NavtItem>
     <NavtItem><Link to="/nonlinear">비선형</Link></NavtItem>
