@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { BackTracking, BruteForce, DivideConquer, DynamicProgramming, Greedy } from "algorithm";
+import { Counter, Home, Navigation } from "common";
+import { Linear, Mathmatics, Nonlinear } from "datastructure";
+import React from "react";
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => (
+  <>
+  <Navigation />
+  <Switch>
+  <Route  exact path= '/' component = {Home}/>
+  <Redirect  from = '/home' to = {'/'}/>
+  <Route  exact path= '/counter' component = {Counter}/>
+  <Route  exact path= '/math' component = {Mathmatics}/>  
+  <Route  exact path= '/linear' component = {Linear}/>  
+  <Route  exact path= '/nonlinear' component = {Nonlinear}/>  
+  <Route  exact path= '/bruteForce' component = {BruteForce}/>  
+  <Route  exact path= '/divideConquer' component = {DivideConquer}/>  
+  <Route  exact path= '/greedy' component = {Greedy}/>  
+  <Route  exact path= '/dynamicP' component = {DynamicProgramming}/>  
+  <Route  exact path= '/backTracking' component = {BackTracking}/>  
+  </Switch>
+  </>
+)
 
-export default App;
+export default App
