@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here
 class UserVo(models.Model):
     username = models.TextField(primary_key=True)
     password = models.CharField(max_length=10)
@@ -9,9 +8,10 @@ class UserVo(models.Model):
     birth = models.TextField()
     address = models.TextField()
 
+    def __str__(self):
+        return f'[{self.pk}] {self.username}'
+'''
     class Meta:
         manage = True
         db_table = 'users'
-
-    def __str__(self):
-        return f'[{self.pk}] {self.username}'
+'''
