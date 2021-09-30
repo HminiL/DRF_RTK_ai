@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { addUserAction } from 'reducers/user.reducer';
-import { userRegister } from 'api';
 
 function Copyright(props) {
   return (
@@ -53,10 +52,18 @@ export default function UserJoin() {
         e.preventDefault();
         alert(`가입 회원 정보: ${JSON.stringify(user)}`)
         addUser(user)
-        userRegister({user})
+        // {email, password}는 json
+        // email : email 이나 이름이 같기 때문에 생략했음. 즉 키 값이 생략된 상태
+        // setName('')
+        // setBirth('')
+        // setAddress('')
+        // setEmail('')
+        // setPassword('')
     }    
     const addUser = payload => dispatch(addUserAction(payload))
-
+    // const addUser = user => {
+    //   dispatch(addUserAction(user))
+    
 
     const handleChange =e => {
       e.preventDefault()
@@ -67,6 +74,15 @@ export default function UserJoin() {
         [name] : value
       })
     }
+    // const handleUsername = e => {
+    //     e.preventDefault()
+    //     setName(e.target.value)
+    // }
+
+    // const handleBirth = e => {
+    //     e.preventDefault()
+    //     setBirth(e.target.value)
+    // }
 
   return (
     <ThemeProvider theme={theme}>
