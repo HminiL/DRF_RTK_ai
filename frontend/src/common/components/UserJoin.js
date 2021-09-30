@@ -35,13 +35,14 @@ export default function UserJoin() {
     
     const [ user, setUser ] = useState({
       username : '',
+      name : '',
       email : '',
       password : '',
       birth : '',
       address : ''
     })
     
-    const { username, email, password, birth, address } = `user`
+    const { username, name, email, password, birth, address } = `user`
     // const [ birth, setBirth ] = useState('')
     // const [ address, setAddress ] = useState('')
     // const [ email, setEmail ] = useState('')
@@ -54,6 +55,8 @@ export default function UserJoin() {
         alert(`가입 회원 정보: ${JSON.stringify(user)}`)
         addUser(user)
         userRegister({user})
+        .then(res => {alert(`회원가입 완료 : ${res.data.result}`)})
+        .catch(err => {alert(`회원가입 실패 : ${err}`)})
     }    
     const addUser = payload => dispatch(addUserAction(payload))
 
@@ -103,11 +106,11 @@ export default function UserJoin() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={email}
+              id="name"
+              label="name"
+              name="name"
+              autoComplete="name"
+              value={name}
               onChange={handleChange}
               autoFocus
             />
@@ -122,6 +125,18 @@ export default function UserJoin() {
               value={password}
               onChange={handleChange}
               autoComplete="current-password"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              value={email}
+              onChange={handleChange}
+              autoFocus
             />
             <TextField
               margin="normal"
