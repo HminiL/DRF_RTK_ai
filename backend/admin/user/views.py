@@ -16,9 +16,9 @@ def users(request):
         serializer = UserSerializer(all_users, many=True)
         return JsonResponse(data = serializer, safe = False)
     elif request.method == 'POST':
-        ic('========== 회원가입 진입 ===============')
+        # ic('========== 회원가입 진입 ===============')
         new_user = request.data['body']
-        ic(new_user)
+        # ic(new_user)
         serializer = UserSerializer(data = new_user['user'])
         if serializer.is_valid():
             serializer.save()
