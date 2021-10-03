@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Housing as housing
 
 class HousingSerializer(serializers.Serializer):
-    id = serializers.CharField()
+    id = serializers.AutoField()
     longitude = serializers.CharField()
     latitude = serializers.CharField()
     housing_median_age = serializers.CharField()
