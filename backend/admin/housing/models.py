@@ -5,16 +5,22 @@ from icecream import ic
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-
-from admin.common.models import Dataset
+from admin.common.models import DFrameGenerater
 
 
 class HousingService(object):
+    def __init__(self):
+        self.dfg  = DFrameGenerater()
+        self.dfg.fname  = 'admin/housing/data/housing.csv'
+        self.df = self.dfg.create_model()
 
-    dataset = Dataset()
 
-    def new_model(self) -> object :
-        return pd.read_csv(f'admin/housing/data/housing.csv')
+    def housing_info(self):
+        self.dfg.model_info(self.df)
+
+    def housing_hist(self):
+        self.model.dframe.hist(bins=50, figsize=(20,15))
+        plt.savefig('admin/housing/image/housing-hist.png')
 
     def split_model(self) -> []:
         train_set, test_set = train_test_split(self.new_model(), test_size=0.2, random_state=42)
@@ -23,9 +29,9 @@ class HousingService(object):
     def income_cat_hist(self):
         h = self.new_model()
         h['income_cat'] = pd.cut(h['median_income'],
-                                 bins = [0.,1.5,3.0,4.5,6.,np.inf], #np.inf is NaN(Not a Number)
-                                 labels=[1,2,3,4,5]
-                                 )
+                             bins = [0.,1.5,3.0,4.5,6.,np.inf], #np.inf is NaN(Not a Number)
+                             labels=[1,2,3,4,5]
+                             )
         h['income_cat'].hist()
         plt.savefig('admin/housing/image/income-cat.png')
 
@@ -37,8 +43,7 @@ class HousingService(object):
             temp_test_set = h.loc[test_idx]
         ic(temp_test_set['income_cat'].value_counts() / len(temp_test_set))
 
-
-#  위 함수 밑 생성자 위는 랜덤 아래는 기준으로 나눔
+        # 사이킷런  위 함수 밑 생성자 위는 랜덤 아래는 기준으로 나눔
 
 if __name__ == '__main__':
     h = HousingService()
@@ -67,4 +72,25 @@ class Housing(models.Model):
     def __str__(self):
 
         return f'[{self.pk}] : {self.id}'
+
+
+'''
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 20640 entries, 0 to 20639
+Data columns (total 10 columns):
+ #   Column              Non-Null Count  Dtype
+---  ------              --------------  -----
+ 0   longitude           20640 non-null  float64
+ 1   latitude            20640 non-null  float64
+ 2   housing_median_age  20640 non-null  float64
+ 3   total_rooms         20640 non-null  float64
+ 4   total_bedrooms      20433 non-null  float64
+ 5   population          20640 non-null  float64
+ 6   households          20640 non-null  float64
+ 7   median_income       20640 non-null  float64
+ 8   median_house_value  20640 non-null  float64
+ 9   ocean_proximity     20640 non-null  object
+dtypes: float64(9), object(1)
+memory usage: 1.6+ MB
+'''
 
