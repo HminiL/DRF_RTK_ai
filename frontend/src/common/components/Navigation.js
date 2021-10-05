@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 const Navigation = ()=>(<Nav>
 <NavList>
-    <NavtItem><Link to="/counter">counter</Link></NavtItem>
+    <NavtItem><Link to="/counter-old">counter</Link></NavtItem>
     <NavtItem><Link to="/sign-up">User Join</Link></NavtItem>
     <NavtItem><Link to="/todo">todo</Link></NavtItem>
     <NavtItem><Link to="/math">수학</Link></NavtItem>

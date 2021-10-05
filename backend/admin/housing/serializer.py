@@ -2,16 +2,15 @@ from rest_framework import serializers
 from .models import Housing as housing
 
 class HousingSerializer(serializers.Serializer):
-    id = serializers.AutoField()
-    longitude = serializers.CharField()
-    latitude = serializers.CharField()
-    housing_median_age = serializers.CharField()
-    total_rooms = serializers.CharField()
-    total_bedrooms = serializers.CharField()
-    population = serializers.CharField()
-    households = serializers.CharField()
-    median_income = serializers.CharField()
-    median_house_value = serializers.CharField()
+    id = serializers.CharField()
+    latitude = serializers.FloatField()
+    housing_median_age = serializers.FloatField()
+    total_rooms = serializers.FloatField()
+    total_bedrooms = serializers.FloatField()
+    population = serializers.FloatField()
+    households = serializers.FloatField()
+    median_income = serializers.FloatField()
+    median_house_value = serializers.FloatField()
     ocean_proximity = serializers.CharField()
 
     class Meta:
@@ -22,4 +21,4 @@ class HousingSerializer(serializers.Serializer):
         return housing.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        housing.objects.filter(pk=instance.id).update(**validated_data)
+        return housing.objects.filter(pk=instance.housing_id).update(**validated_data)
