@@ -20,6 +20,10 @@ def income_cat_hist(request):
     HousingService().income_cat_hist()
     return JsonResponse({'result':'income_cat_hist Success'})
 
+def split_model(request):
+    HousingService().split_model()
+    return JsonResponse({'result':'split_model Success'})
+
 def split_model_by_income_cat(request):
     hs = HousingService()
     hs.income_cat_hist()
