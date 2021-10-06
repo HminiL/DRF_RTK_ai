@@ -21,7 +21,6 @@ class DFrameGenerater(object):
 
     @property
     def context(self) -> str: return self._context
-
     @context.setter
     def context(self, context): self._context = context
 
@@ -33,9 +32,8 @@ class DFrameGenerater(object):
 
     @property
     def dframe(self) -> object: return self._dframe
-
-    @fname.setter
-    def fname(self, dframe): self._dframe = dframe
+    @dframe.setter
+    def dframe(self, dframe): self._dframe = dframe
 
     @property
     def fname(self)-> str: return self._fname
@@ -103,17 +101,17 @@ class Reader(ReaderBase):
         return file.context + file.fname
 
     def csv(self,file) -> object:
-        return pd.read_csv(f'{file}.csv', encoding='utf-8',thousands=',')  #thousands 숫자 인신하도록 천 단위임을 알려주는 것
+        return pd.read_csv(f'{file}.csv', encoding='CP949',thousands=',')  #thousands 숫자 인신하도록 천 단위임을 알려주는 것
     # csv, csv_header data의 header 유무 차이
     def csv_header(self, file, header) -> object:
-        return pd.read_csv(f'{file}.csv', encoding='utf-8',thousands=',', header=header)
+        return pd.read_csv(f'{file}.csv', encoding='CP949',thousands=',', header=header)
 
     def xls(self, file, header, usecols) -> object:
         return pd.read_excel(f'{file}.xls', header=header, usecols=usecols)
 
     def json(self, file) -> object:
-        return json.load(open(f'{file}.json', encoding='utf-8'))
-        # return pd.read_json(f'{file}.json', encoding='utf-8')
+        return json.load(open(f'{file}.json', encoding='CP949'))
+        # return pd.read_json(f'{file}.json', encoding='CP949')
 
     def gmaps(self) -> object:
         return googlemaps.Client(key='')
@@ -123,5 +121,6 @@ class Printer(PrinterBase):
     def dframe(self, this):
         ic(this.head(3))
         ic(this.tail(3))
-        ic(this.columns())
-        ic(this.isnull().sum())
+        ic(this.info())
+        print(this.isnull().sum())
+        # ic(this.isnull().sum())
