@@ -32,8 +32,9 @@ class CrimeCctvModel():
         crime = self.create_crime_model()
         reader = self.reader
         station_names = []
-        for name in crime['관서명']:
-            station_names.append('서울'+str(name[:-1]+'경찰서'))
+        # for name in crime['관서명']:
+        #     station_names.append('서울'+str(name[:-1]+'경찰서'))
+        [station_names.append('서울'+str(name[:-1]+'경찰서')) for name in crime['관서명']]
         station_addrs = []
         station_lats = []
         station_lngs = []
