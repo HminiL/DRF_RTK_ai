@@ -1,9 +1,9 @@
 from django.db import models
-from admin.common.models import DFrameGenerater, Reader, Printer
+from admin.common.models import ValueObject, Reader, Printer
 
 
 class CrimeCctvModel():
-    generator  = DFrameGenerater()
+    vo  = ValueObject()
     reader = Reader()
     printer = Printer()
 
@@ -17,7 +17,7 @@ class CrimeCctvModel():
         self.arrest_crime_rate_columns = ['살인 검거율', '강도 검거율', '강간 검거율', '절도 검거율', '폭력 검거율'] # Nominal
 
     def create_crime_model(self):
-        generator = self.generator
+        generator = self.vo
         reader = self.reader
         printer = self.printer
         generator.context = 'admin/crime/data/'
@@ -59,4 +59,8 @@ class CrimeCctvModel():
         # crime.loc[crime['관서명'] == '종암서', ['구별']] = '성북구'
         # crime.loc[crime['관서명'] == '방배서', ['구별']] = '서초구'
         # crime.loc[crime['관서명'] == '수서서', ['구별']] = '강남구'
-        crime.to_csv(self.generator.context + 'new_data/police_position.csv')
+        # 금천경찰서는 관악구에 있어서 금천구로 변경
+        print('==================================================')
+        print(f"샘플 중 혜화서 정보 : {crime[crime['관서명'] == '혜화서']}")
+        print(f"샘플 중 금천서 정보 : {crime[crime['관서명'] == '금천서']}")
+        crime.to_csv(self.vo.context + 'new_data/police_position.csv')

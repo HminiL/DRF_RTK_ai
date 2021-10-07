@@ -8,7 +8,7 @@ import googlemaps
 
 
 @dataclass
-class DFrameGenerater(object):
+class ValueObject(object):
 
     train: object
     test: object
@@ -114,13 +114,13 @@ class Reader(ReaderBase):
         # return pd.read_json(f'{file}.json', encoding='CP949')
 
     def gmaps(self) -> object:
-        return googlemaps.Client(key='AIzaSyDuJ6OJ1SkgL_qzsrDj8PhJmCTy0LT7GXo')
+        return googlemaps.Client(key='')
 
 
 class Printer(PrinterBase):
     def dframe(self, this):
         ic(this.head(3))
         ic(this.tail(3))
-        ic(this.info())
+        print(this.info())
         print(this.isnull().sum())
         # ic(this.isnull().sum())

@@ -5,18 +5,18 @@ from icecream import ic
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-from admin.common.models import DFrameGenerater
+from admin.common.models import ValueObject
 
 
 class HousingService(object):
     def __init__(self):
-        self.dfg  = DFrameGenerater()
-        self.dfg.fname  = 'admin/housing/data/housing.csv'
-        self.model = self.dfg.create_model()
+        self.vo  = ValueObject()
+        self.vo.fname  = 'admin/housing/data/housing.csv'
+        self.model = self.vo.create_model()
 
 
     def housing_info(self):
-        self.dfg.model_info(self.model)
+        self.vo.model_info(self.model)
 
     def housing_hist(self):
         self.model.hist(bins=50, figsize=(20,15))
