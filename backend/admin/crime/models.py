@@ -17,12 +17,12 @@ class CrimeCctvModel():
         self.arrest_crime_rate_columns = ['살인 검거율', '강도 검거율', '강간 검거율', '절도 검거율', '폭력 검거율'] # Nominal
 
     def create_crime_model(self):
-        generator = self.vo
+        vo = self.vo
         reader = self.reader
         printer = self.printer
-        generator.context = 'admin/crime/data/'
-        generator.fname = 'crime_in_Seoul'
-        crime_file_name = reader.new_file(generator)
+        vo.context = 'admin/crime/data/'
+        vo.fname = 'crime_in_Seoul'
+        crime_file_name = reader.new_file(vo)
         print(f'파일명:{crime_file_name}')
         crime_model = reader.csv(crime_file_name)
         printer.dframe(crime_model)
@@ -63,4 +63,31 @@ class CrimeCctvModel():
         print('==================================================')
         print(f"샘플 중 혜화서 정보 : {crime[crime['관서명'] == '혜화서']}")
         print(f"샘플 중 금천서 정보 : {crime[crime['관서명'] == '금천서']}")
-        crime.to_csv(self.vo.context + 'new_data/police_position.csv')
+        #crime.to_csv(self.vo.context + 'new_data/police_position.csv')
+
+    def create_cctv_model(self):
+        vo = self.vo
+        reader = self.reader
+        printer = self.printer
+        vo.context = 'admin/crime/data/'
+        vo.fname = 'CCTV_in_Seoul'
+        cctv_file_name = reader.new_file(vo)
+        cctv_model = reader.csv(cctv_file_name)
+        cctv_model.rename(columns={'기관명': '구별'}, inplace=True)
+        cctv_model.to_csv(vo.context + 'new_data/cctv_in_seoul.csv')
+        printer.dframe(cctv_model)
+        return cctv_model
+
+
+    def create_population_model(self):
+        vo = self.vo
+        reader = self.reader
+        printer = self.printer
+        vo.context = 'admin/crime/data/'
+        vo.fname = 'population_in_Seoul'
+        population_file_name = reader.new_file(vo)
+        population_model = reader.xls(population_file_name, 2, ('B,D,G,J,N') )
+        # header와 columns의 원하는 열을 위치로 호출한다. list로 호출도 가능
+        # 예) usecols : ('B,D,G,J,N')혹은 [2,4,7,10,14] 가능
+        printer.dframe(population_model)
+        return population_model
