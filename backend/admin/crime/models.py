@@ -1,3 +1,4 @@
+import pandas as pd
 from django.db import models
 from admin.common.models import ValueObject, Reader, Printer
 
@@ -26,6 +27,23 @@ class CrimeCctvModel():
         print(f'파일명:{crime_file_name}')
         crime_model = reader.csv(crime_file_name)
         printer.dframe(crime_model)
+        '''
+                RangeIndex: 31 entries, 0 to 30
+        Data columns (total 11 columns):
+         #   Column  Non-Null Count  Dtype
+        ---  ------  --------------  -----
+         0   관서명     31 non-null     object
+         1   살인 발생   31 non-null     int64
+         2   살인 검거   31 non-null     int64
+         3   강도 발생   31 non-null     int64
+         4   강도 검거   31 non-null     int64
+         5   강간 발생   31 non-null     int64
+         6   강간 검거   31 non-null     int64
+         7   절도 발생   31 non-null     int64
+         8   절도 검거   31 non-null     int64
+         9   폭력 발생   31 non-null     int64
+         10  폭력 검거   31 non-null     int64
+        '''
         return crime_model
 
     def create_police_position(self):
@@ -74,6 +92,7 @@ class CrimeCctvModel():
         cctv_file_name = reader.new_file(vo)
         cctv_model = reader.csv(cctv_file_name)
         cctv_model.rename(columns={'기관명': '구별'}, inplace=True)
+        # cctv_model.rename(columns={cctv_model.columns[0]: '구별'}, inplace=True)
         cctv_model.to_csv(vo.context + 'new_data/cctv_in_seoul.csv')
         printer.dframe(cctv_model)
         return cctv_model
@@ -86,8 +105,24 @@ class CrimeCctvModel():
         vo.context = 'admin/crime/data/'
         vo.fname = 'population_in_Seoul'
         population_file_name = reader.new_file(vo)
-        population_model = reader.xls(population_file_name, 2, ('B,D,G,J,N') )
+        population = reader.xls(population_file_name, 2, ('B,D,G,J,N') )
         # header와 columns의 원하는 열을 위치로 호출한다. list로 호출도 가능
         # 예) usecols : ('B,D,G,J,N')혹은 [2,4,7,10,14] 가능
-        printer.dframe(population_model)
-        return population_model
+        '''
+        print(population.columns)
+        Index(['자치구', '계', '계.1', '계.2', '65세이상고령자'], dtype='object')
+        따라서 하나만 변경할때는 .rename을 이용하여 columns={'기관명': '구별'}을 사용
+        모두 변경할때는 .columns = ['구별','인구수','한국인','외국인','고령자']를 이용하여 모두 변경
+        '''
+        population.columns = ['구별','인구수','한국인','외국인','고령자']
+        population.to_csv(vo.context + 'new_data/new_population.csv')
+        # population.drop([26],inplace=True) 마지막 줄에 있던 공백 제거
+        printer.dframe(population)
+        return population
+
+    def merge_cctv_pop(self):
+        cctv = self.create_cctv_model()
+        pop = self.create_population_model()
+        cctv_pop = pd.merge(left=cctv, right=pop, on='구별', how='left')
+        cctv_pop.to_csv(self.vo.context + 'new_data/cctv_pop.csv')
+        return cctv_pop

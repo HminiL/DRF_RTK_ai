@@ -24,3 +24,8 @@ def create_cctv_model(request):
 def create_population_model(request):
     CrimeCctvModel().create_population_model()
     return JsonResponse({'result':'Create Population Model Success'})
+
+
+def create_population_model(request):
+    CrimeCctvModel().merge_cctv_pop()
+    return JsonResponse({'result':'Create Population Model Success'})
