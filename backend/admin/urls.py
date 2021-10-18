@@ -22,4 +22,5 @@ urlpatterns = [
     path('api/crime/', include('admin.crime.urls')),
     path('api/users/', include('admin.user.urls')),
     path('api/crawling/', include('admin.crawling.urls')),
+    path('api/tensor/', include('admin.calculator.urls')),
 ]
