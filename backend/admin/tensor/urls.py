@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from admin.calculator import views
+from admin.tensor import views
 
 urlpatterns = {
     url(r'calculator',views.calculator),
