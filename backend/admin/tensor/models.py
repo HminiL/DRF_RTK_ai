@@ -15,23 +15,24 @@ class FashionClassification(object):
                            'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
     def fashion(self):
-        self.get_data()
-
-    def hook(self):
-        images = self.get_data()
-        model = self.create_model()
-        model = self.train_model()
-        self.test_model(model)
-        arr = self.predict()
-        self.plot_image()
-        self.plot_value_array()
-
-    def get_data(self) -> []:
         fashion_mnist = keras.datasets.fashion_mnist
-        (X_train_full, y_train_full),(X_test, y_test) = fashion_mnist.load_data()
-        self.peek_datas(X_train_full, X_test, y_train_full, y_test)
+        (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+        # self.peek_datas(train_images, test_images, train_labels)
+        model = keras.models.Sequential([
+            keras.layers.Flatten(input_shape=[28, 28]),
+            keras.layers.Dense(128, activation="relu"),  # neron count 128
+            keras.layers.Dense(10, activation="softmax")  # 출력층 활성화함수는 softmax
+        ])
+        model.compile(optimizer='adam',
+                      loss='sparse_categorical_crossentropy',
+                      metrics=['accuracy'])
 
-        return [X_train_full, y_train_full, X_test, y_test]
+            # keras.models. : 모듈
+            # Sequential : 객체
+        model.fit(train_images, train_labels, epochs = 5)
+        # self.test_and_save_images(model, test_images, test_labels)
+        model.save(f'{self.vo.context}fashion_classification.h5')
+
 
     def peek_datas(self, train_images, test_images, train_labels):
         print(train_images.shape)
@@ -45,35 +46,76 @@ class FashionClassification(object):
         plt.savefig(f'{self.vo.context}fashion_random.png')
         plt.figure(figsize=(10,10))
         for i in range(25):
-            pass
-
-    def create_model(self) -> object:
-        model = keras.models.Sequential()
-        model.add(keras.layers.Flatten(input_shape=[28,28]))
-        model.add(keras.layers.Dense(300, activation="relu")) # neron count 300
-        model.add(keras.layers.Dense(100, activation="relu"))
-        model.add(keras.layers.Dense(10, activation="softmax")) # 출력층 활성화함수는 softmax
-        model.compile(optmizer='sgd', loss='')
+            plt.subplot(5, 5, i + 1)
+            plt.xticks([])
+            plt.yticks([])
+            plt.grid(False)
+            plt.imshow(train_images[i], cmap=plt.cm.binary)
+            plt.xlabel(self.class_name[train_labels[i]])
+        plt.savefig(f'{self.vo.context}fashion_subplot.png')
 
 
-        # keras.models. : 모듈
-        # Sequential : 객체
+    def test_and_save_images(self, model, test_images, test_labels):
+        test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)  # verbose 는 학습하는 내부상황 보기 중 2번선택
+        predictions = model.predict(test_images)
+        i = 5
+        print(f'모델이 예측한 값 : {np.argmax(predictions[1])}')
+        print(f'정답: {test_labels[i]}')
+        print(f'테스트 정확도: {test_acc}')
+        plt.figure(figsize=(6, 3))
+        plt.subplot(1, 2, 1)  # 1행 2열 1번째
+        test_images, test_predictions, test_label = test_images[i], predictions[i], test_labels[i]
+        plt.grid(False)
+        plt.xticks([])
+        plt.yticks(([]))
+        plt.imshow(test_images, cmap=plt.cm.binary)
+        test_pred = np.argmax(test_predictions)
+        print(f'{test_pred}')
+        print('#' * 100)
+        print(f'{test_labels}')
 
+        if test_pred == test_label:
+            color = 'blue'
+        else:
+            color = 'red'
+        plt.xlabel('{} : {} %'.format(self.class_name[test_pred],
+                                      100 * np.max(test_predictions),
+                                      self.class_name[test_label], color))
+        plt.subplot(1, 2, 2)
+        plt.grid(False)
+        plt.xticks([])
+        plt.yticks([])
+        this_plot = plt.bar(range(10), test_pred, color='#777777')
+        plt.ylim([0, 1])
+        test_pred = np.argmax(test_predictions)
+        this_plot[test_pred].set_color('red')
+        this_plot[test_label].set_color('blue')
+        plt.savefig(f'{self.vo.context}fashion_answer2.png')
+    '''
+    def train_model(self, model, train_images, train_labels) -> object:
+        model.fit(train_images, train_labels, epoch=5)
+        return model
 
-    def train_model(self) -> object:
-        pass
+    def test_model(self, model, test_images, test_labels) -> object:
+        test_loss, test_acc = model.evaluate(test_images, test_labels, verbose = 2)
+        # verbose 는 학습하는 내부상황 보기 중 2번 선택
+        print(f'테스트 정확도 : {test_acc}')
 
-    def test_model(self) -> object:
-        pass
+    def predict(self, model, test_images, test_labels, index):
+        prediction = model.predict(test_images)
+        pred = prediction[index]
+        answer = test_labels[index]
+        print(f'모델이 예측한 값 {np.argmax(pred)}')
+        print(f'정답 : {answer}')
+        return model
 
-    def predict(self):
-        pass
 
     def plot_image(self):
         pass
 
     def plot_value_array(self):
         pass
+    '''
 
 
 class Perceptron(object):  # 퍼셉트론 분류기
