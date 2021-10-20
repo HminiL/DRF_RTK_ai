@@ -3,8 +3,29 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
-
 from admin.common.models import ValueObject
+
+
+class TensorFunction(object):
+    def __init__(self):
+        self.vo = ValueObject()
+        self.vo.context = 'admin/tensor/data/'
+
+    def tf_function(self):
+        mnist = tf.keras.datasets.mnist
+        (X_train, y_train), (X_test, y_test) = mnist.load_data()
+        X_train, X_test = X_train / 255.0, X_test /255.0
+        X_train = X_train[..., tf.newaxis]  # matrix [[]]로 표현 [ , ]도 가능.
+        X_test = X_test[..., tf.newaxis]
+        train_ds = tf.data.Dataset.from_tensor_slices(
+            (X_train, y_train)
+        ).shuffle(10000).batch(32)
+        test_ds = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(32)
+        plt.figure(figsize=(10,10))
+        plt.imshow(train_ds[3])
+        plt.savefig(f'{self.vo.context}train_ds.png')
+        plt.imshow(test_ds[3])
+        plt.savefig(f'{self.vo.context}test_ds.png')
 
 
 class FashionClassification(object):
@@ -91,6 +112,7 @@ class FashionClassification(object):
         this_plot[test_pred].set_color('red')
         this_plot[test_label].set_color('blue')
         plt.savefig(f'{self.vo.context}fashion_answer2.png')
+
     '''
     def train_model(self, model, train_images, train_labels) -> object:
         model.fit(train_images, train_labels, epoch=5)
