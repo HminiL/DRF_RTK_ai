@@ -11,6 +11,150 @@ class TensorFunction(object):
         self.vo = ValueObject()
         self.vo.context = 'admin/tensor/data/'
 
+
+    def hook(self):
+        menu ='train_tf_model_by_random_date'
+        if menu == 'tf_function':
+            pass
+        elif menu == 'tf_sum':
+            result = self.tf_sum()
+        elif menu == 'tf_add':
+            result = self.tf_add()
+        elif menu == 'create_model':
+            result = self.create_model().summary()
+        elif menu == 'create_tf_empty_model':
+            result = self.create_tf_empty_model()
+        elif menu == 'train_tf_model_by_random_date':
+            result = self.train_tf_model_by_random_date()
+        else:
+            result = '해당사항 없음'
+        print(f'결과 : {result}')
+
+        # self.tf_function()
+        # print('#'*200)
+        # print(f'결과 : {self.decorator_example()}')
+        # print('#'*200)
+        # print(f'구구단 : {self.gugudan1(3)}')
+        # print(f'구구단2 : {self.gugudan2(3)}')
+
+    def train_tf_model_by_random_date(self):
+        (x, y) = self.make_random_data()
+        x_train, y_train = x[:150], y[:150] #리스트
+        x_test, y_test = x[:150], y[:150]
+        model = keras.models.load_model(f'{self.vo.context}empty_model.h5')
+        history = model.fit(x_train, y_train, epochs=30, validation_split=0.3) # validation_split=0.3 30%으로 자동으로 test 생성
+        epochs = np.arange(1, 30 + 1)
+        plt.plot(epochs,history.history['loss'], label='Training Loss')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.savefig(f'{self.vo.context}simple_model.png')
+
+
+    def create_tf_empty_model(self):
+        # Dense(units=1, input_dim=1) #units는 뉴런의 개수
+        # 옵티마이저 sgd, 손실함수 mse, 활성화함수 Relu
+        # 드롭아웃 20%
+        # simple_model.h5로 저장
+        '''
+        model = keras.models.Sequential([
+            keras.layers.Flatten(input_shape=[1,150]), #[1,150] 행렬 구조
+            keras.layers.Dropout(rate=0.2),
+            keras.layers.Dense(units=1, activation="relu", input_dim=1, kernel_initializer="he_normal"), #kernel_initializer="he_normal" 생략 가능(디폴트)
+            keras.layers.Dropout(rate=0.2),
+            keras.layers.Dense(1, activation="softmax")
+        ])
+        '''
+        model = keras.models.Sequential()
+        model.add(keras.layers.Dense(units=1, activation="relu", input_dim=1))
+        model.add(keras.layers.Dropout(rate=0.2))
+        model.add(keras.layers.Dense(1, activation="softmax"))
+        model.compile(optimizer='adam',loss='mse')
+        model.save(f'{self.vo.context}empty_model.h5')
+        return model
+
+    '''
+    model = Sequential()    # sequntial 모델 생성 할당 첫번째 층을  
+    model.add(Dense(32, input_shape=(16, ))) # 첫번째 층을 dense 32 크기 out 
+    model.add(Dense(32))
+    Arguments:
+    units: 현재 dense 를 통해서 만들 hidden layer 의 Node 의 수
+    첫번째 인자 : 출력 뉴런의 수를 설정합니다.
+    input_dim : 입력 뉴런의 수를 설정합니다.
+    init : 가중치 초기화 방법 설정합니다.
+    uniform : 균일 분포
+    normal : 가우시안 분포
+    activation : 활성화 함수 설정합니다.
+    linear : 디폴트 값, 입력뉴런과 가중치로 계산된 결과값이 그대로 출력으로 나옵니다.
+    relu : rectifier 함수, 은익층에 주로 쓰입니다.
+    sigmoid : 시그모이드 함수, 이진 분류 문제에서 출력층에 주로 쓰입니다.
+    softmax : 소프트맥스 함수, 다중 클래스 분류 문제에서 출력층에 주로 쓰입니다.
+    다중클래스 분류문제에서는 클래스 수만큼 출력 뉴런이 필요합니다. 
+    만약 세가지 종류로 분류한다면, 아래 코드처럼 출력 뉴런이 3개이고, 
+    입력 뉴런과 가중치를 계산한 값을 각 클래스의 확률 개념으로 표현할 수 있는 
+    활성화 함수인 softmax를 사용합니다.
+
+    https://talkingaboutme.tistory.com/entry/DL-%ED%95%B4%EB%B3%B4%EB%A9%B4%EC%84%9C-%EB%B0%B0%EC%9A%B0%EB%8A%94-%EB%94%A5%EB%9F%AC%EB%8B%9D-ANN-%EA%B5%AC%ED%98%84-2
+    '''
+
+    def make_random_data(self):
+        x = np.random.uniform(low=-2, high=2, size=200)
+        y = []
+        for t in x:
+            r = np.random.normal(loc=0.0, scale=(0.5 + t * t / 3), size=None)
+            y.append(r)
+        return x, 1.726 + x - 0.84 + np.array(y)
+
+    def create_model(self) -> object:
+        input = tf.keras.Input(shape = (1,))
+        output = tf.keras.layers.Dense(1)(input)
+        model = tf.keras.Model(input, output)
+        return model
+
+    # @tf.function
+    # def decorator_example(self):
+    #     a = tf.constant(1,tf.float32)
+    #     b = tf.constant(2,tf.float32)
+    #     c = tf.constant(3,tf.float32)
+    #     z = a + b + c
+    #     # print(f'@tf.function 사용하기 : {z}')
+    #     return z
+
+    @tf.function
+    def tf_sum(self):
+        a = tf.constant(1, tf.float32)
+        b = tf.constant(2, tf.float32)
+        c = tf.constant(3, tf.float32)
+        z = a + b + c
+        return z
+
+    @tf.function
+    def tf_add(self):
+        x = [1,2,3,4,5]
+        y = [1,2,3,4,5]
+        z = tf.add(x, y)
+        # z = tf.subtract(x, y)
+        # z = tf.multiply(x, y)
+        # z = tf.divide(x, y)
+        return z
+
+    @tf.function
+    def gugudan1(self,dan):
+        su = 0
+        for _ in range(9):
+            su = tf.add(su, 1)
+        return su
+
+    @tf.function
+    def gugudan2(self, dan):
+        for i in range(1, 10):
+            result = tf.multiply(dan, i)
+            # print(result.numpy()) # AttributeError: 'Tensor' object has no attribute 'numpy'
+            print(result)
+        return result
+
+
+
     def tf_function(self):
         mnist = tf.keras.datasets.mnist
         (X_train, y_train), (X_test, y_test) = mnist.load_data()
@@ -21,11 +165,19 @@ class TensorFunction(object):
             (X_train, y_train)
         ).shuffle(10000).batch(32)
         test_ds = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(32)
+        print(f'train_ds : {type(train_ds)}')
+        '''
+        train_ds : <class 'tensorflow.python.data.ops.dataset_ops.BatchDataset'>
+        '''
+        print(list(train_ds.as_numpy_iterator()))
+        '''
         plt.figure(figsize=(10,10))
         plt.imshow(train_ds[3])
         plt.savefig(f'{self.vo.context}train_ds.png')
         plt.imshow(test_ds[3])
         plt.savefig(f'{self.vo.context}test_ds.png')
+        '''
+
 
 
 class FashionClassification(object):
