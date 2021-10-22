@@ -21,9 +21,9 @@ class MyCV2(object):
             print('얼굴 인식 실패')
             quit()
         for(x, y, w, h) in face:
-            red = (0, 0, 255)
-            image2 = cv2.rectangle(image, (x,y), (x+w, y+h), red, thickness=20)
-            mos = self.mosaic(image2, rect=(x, y, x+w, y+h), size=10)
+            # red = (0, 0, 255)
+            # image2 = cv2.rectangle(image, (x,y), (x+w, y+h), red, thickness=20)
+            mos = self.mosaic(image, rect=(x, y, x+w, y+h), size=10)
 
         cv2.imwrite(f'{vo.context}girl-mosaic.png', mos)
         cv2.waitKey(0)
@@ -34,7 +34,7 @@ class MyCV2(object):
         reader = self.reader
         vo.fname = 'cat.jpg'
         image = cv2.imread(reader.new_file(vo), cv2.IMREAD_COLOR)
-        mos = self.mosaic(image, rect=(50, 50, 450, 450), size=10)
+        mos = self.mosaic(image, rect=(50, 50, 450, 450), size=5)
         cv2.imwrite(f'{vo.context}cat-mosaic.png', mos)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
