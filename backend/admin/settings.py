@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'admin.tensor',
     'admin.iris',
     'admin.mycv2',
+    'admin.rnn',
+    'admin.nlp',
 ]
 CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000' ,'http://localhost:3000']
 CORS_ALLOW_CREDENTIALS = True

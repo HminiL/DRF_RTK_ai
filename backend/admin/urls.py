@@ -25,4 +25,6 @@ urlpatterns = [
     path('api/tensor/', include('admin.tensor.urls')),
     path('api/iris/', include('admin.iris.urls')),
     path('api/mycv2/', include('admin.mycv2.urls')),
+    path('api/rnn/', include('admin.rnn.urls')),
+    path('api/nlp/', include('admin.nlp.urls')),
 ]
