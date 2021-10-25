@@ -1,5 +1,7 @@
 import csv
+from collections import defaultdict
 
+import pandas as pd
 import tensorflow as tf
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -14,21 +16,46 @@ class NaverMovie(object):
         self.vo = ValueObject()
         self.vo.context = 'admin/nlp/data/'
 
-    def naver_process(self):
+    def web_scraping(self):
         ctx = self.vo.context
         driver = webdriver.Chrome(f'{ctx}chromedriver')
         driver.get('https://movie.naver.com/movie/sdb/rank/rmovie.nhn')
-        soup = BeautifulSoup(driver.page_source, 'html_parser')
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
         all_divs = soup.find_all('div',  attrs={'class','tit3'})
-        products = [div.a.string for div in all_divs]
-        for product in products:
-            with open(f'{ctx}naver_movie_dataset.csv', 'w', encoding='UTF-8', newline='') as f:
-                wr = csv.writer(f, delimiter=',')
-                wr.writerow(product)
+        products = [[div.a.string for div in all_divs]]
+        # f = open(f'{ctx}naver_movie_dataset.csv', 'w', encoding='UTF-8', newline='', delimiter=',')
+        with open(f'{ctx}naver_movie_dataset.csv', 'w', encoding='UTF-8', newline='') as f:
+            wr = csv.writer(f)
+            wr.writerow(products)
         driver.close()
 
+    def naver_process(self):
+        ctx = self.vo.context
+        # self.web_scraping()
+        corpus = pd.read_table(f'{ctx}naver_movie_dataset.csv', sep=',', encoding='UTF-8')
+        train_X = np.array(corpus)
+        # 카테고리 0 (긍정) 1 (부정)
+        n_class0 = len([1 for _, point in train_X if point > 3.5])
+        n_class1= len([train_X])- n_class0
+        counts = defaultdict(lambda : [0,0])
+        for doc, point in train_X:
+            if self.isNumber(doc) is False:
+                words = doc.spilt()
+                for word in words:
+                    counts[word][0 if point > 3.5 else 1] += 1
+        word_counts = counts
+        print(f'word_counts ::: {word_counts}')
+        word_probs = None
 
+    def isNumber(self, doc):
+        try:
+            float(doc)
+            return True
+        except ValueError:
+            return False
 
+    def count_words(self, train_X):
+        pass
 
 
 class MyImdb(object):
@@ -48,8 +75,8 @@ class MyImdb(object):
         word_index["<START>"] = 1
         word_index["<UNK>"] = 2 # Unknown
         word_index["<UNUSED>"] =  3
-        reverse_word_index = dict([v,k] for (k,v) in word_index.items())
-        temp = self.decode_review(train_X[0], reverse_word_index)
+        # reverse_word_index = dict([v,k] for (k,v) in word_index.items())
+        # temp = self.decode_review(train_X[0], reverse_word_index)
         train_X = keras.preprocessing.sequence.pad_sequences(train_X, value=word_index["<PAD>"],
                                                             padding='post',
                                                             maxlen=256)

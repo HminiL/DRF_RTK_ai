@@ -3,6 +3,7 @@ from admin.nlp import views
 
 urlpatterns = {
     url(r'imdb_process',views.imdb_process),
+    url(r'web_scraping',views.naver_process),
     url(r'naver_process',views.naver_process),
 
 }
