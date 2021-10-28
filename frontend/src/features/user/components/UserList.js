@@ -1,22 +1,25 @@
-import React from "react";
-import { useSelector,useDispatch } from 'react-redux'
-import { removeUserAction } from 'features/user/modules/userSlice'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { UserListForm } from '..';
 
-export default function UserList(){
-    const users = useSelector( state => state.userReducer.users)
-    const dispatch = useDispatch()
-    const deleteUser = email => dispatch(removeUserAction(email))
-    return(<>
-        <div style={{textAlign:'center'}}>
-            {users.length === 0 && <h1>등록된 회원이 없습니다.</h1>}
-            {users.length !== 0 && <h1>{users.length}명의 등록된 회원이 있습니다.</h1>}
-            {users.length !== 0 && users.map(
-                user => (<div key={user.name}>
-                    {user.username.length === 0 ?
-                    <span >null</span>
-                    : <span>{user.username}</span>}
-                <button onClick={deleteUser.bind(null, user.username)}>X</button>
-                </div>))}
-        </div>
-    </>)
+
+export default function UserList() {
+  const [list, setList] = useState([])
+ 
+  const SERVER = 'http://localhost:8080'
+  const fetchList = () => {
+      axios.get(`${SERVER}/users`)
+      .then(res => setList(res.data) )
+      .catch(err => console.log(err))
+  }
+
+  useEffect(() =>{
+    fetchList() 
+  }, [])
+  return (
+    <div>
+      <h1>사용자 목록</h1>
+      <UserListForm list={list}/>
+    </div>
+  );
 }
